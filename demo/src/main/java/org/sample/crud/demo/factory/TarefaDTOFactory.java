@@ -1,5 +1,8 @@
 package org.sample.crud.demo.factory;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.sample.crud.demo.dto.TarefaDTO;
 import org.sample.crud.demo.entity.Tarefa;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +25,9 @@ public class TarefaDTOFactory {
 		dto.setPessoaAlocada(tarefa.getPessoaAlocada() != null ? tarefa.getPessoaAlocada().getNome() : null);
 		dto.setFinalizado(tarefa.isFinalizado());
 		return dto;
+	}
+
+	public List<TarefaDTO> createFromEntities(List<Tarefa> tarefas) {
+		return tarefas.stream().map(tarefa -> this.createFromEntity(tarefa)).collect(Collectors.toList());
 	}
 }

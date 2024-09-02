@@ -23,6 +23,16 @@ public class PessoaDTOFactory {
 		dto.setDepartamento(departamentoDTOFactory.createFromEntity(pessoa.getDepartamento()));
 		dto.setTarefas(pessoa.getTarefas().stream().map(tarefa -> tarefaDTOFactory.createFromEntity(tarefa))
 				.collect(Collectors.toList()));
+		
+		if(dto.getTarefas().size() > 0) {
+			int totalHorasGastas = dto.getTarefas().stream().mapToInt(tarefa -> tarefa.getDuracao()).sum();
+			dto.setTotalHorasGastas(totalHorasGastas);
+		
+			dto.setMediaHorasGastasPorTarefa(totalHorasGastas / dto.getTarefas().size());
+		}
+		
+		
+		
 		return dto;
 	}
 
