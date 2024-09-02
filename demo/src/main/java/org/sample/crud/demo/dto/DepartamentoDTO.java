@@ -6,6 +6,7 @@ public class DepartamentoDTO {
 	private long id;
 	private String nome;
 	private List<String> pessoas;
+	private int quantidadePessoas;
 	
 	public long getId() {
 		return id;
@@ -29,6 +30,14 @@ public class DepartamentoDTO {
 
 	public void setPessoas(List<String> pessoas) {
 		this.pessoas = pessoas;
+	}
+
+	public int getQuantidadePessoas() {
+		return quantidadePessoas;
+	}
+
+	public void setQuantidadePessoas(int quantidadePessoas) {
+		this.quantidadePessoas = quantidadePessoas;
 	}	
-	
+		
 }

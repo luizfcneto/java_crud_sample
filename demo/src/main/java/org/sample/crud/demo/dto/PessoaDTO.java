@@ -7,6 +7,8 @@ public class PessoaDTO {
 	private String nome;
 	private DepartamentoDTO departamento;
 	private List<TarefaDTO> tarefas;
+	private int totalHorasGastas;
+	private double mediaHorasGastasPorTarefa;
 
 	public long getId() {
 		return id;
@@ -39,5 +41,23 @@ public class PessoaDTO {
 	public void setTarefas(List<TarefaDTO> tarefas) {
 		this.tarefas = tarefas;
 	}
+
+	public int getTotalHorasGastas() {
+		return totalHorasGastas;
+	}
+
+	public void setTotalHorasGastas(int totalHorasGastas) {
+		this.totalHorasGastas = totalHorasGastas;
+	}
+
+	public double getMediaHorasGastasPorTarefa() {
+		return mediaHorasGastasPorTarefa;
+	}
+
+	public void setMediaHorasGastasPorTarefa(double mediaHorasGastasPorTarefa) {
+		this.mediaHorasGastasPorTarefa = mediaHorasGastasPorTarefa;
+	}
+	
+	
 
 }
