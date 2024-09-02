@@ -2,9 +2,7 @@ package org.sample.crud.demo.entity;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +22,7 @@ public class Pessoa {
     @ManyToOne
     private Departamento departamento;
     
-    @OneToMany(mappedBy = "pessoaAlocada")
+    @OneToMany(mappedBy = "pessoaAlocada", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tarefa> tarefas;
     
     public void setId(long id) {

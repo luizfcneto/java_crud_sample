@@ -3,6 +3,7 @@ package org.sample.crud.demo.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +19,7 @@ public class Departamento {
 
 	private String nome;
 
-	@OneToMany(mappedBy = "departamento")
+	@OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Pessoa> pessoas = new ArrayList<Pessoa>();
 
 	public long getId() {
