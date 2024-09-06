@@ -3,7 +3,6 @@ package org.sample.crud.demo.dto;
 import java.time.LocalDateTime;
 
 public class TarefaDTO {
-	private long id;
 	private String titulo;
     private String descricao;
     private LocalDateTime prazo;
@@ -11,14 +10,6 @@ public class TarefaDTO {
     private int duracao;
     private String pessoaAlocada;
     private boolean finalizado;
-    
-	public long getId() {
-		return id;
-	}
-	
-	public void setId(long id) {
-		this.id = id;
-	}
 	
 	public String getTitulo() {
 		return titulo;

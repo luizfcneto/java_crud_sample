@@ -5,18 +5,27 @@ import java.util.stream.Collectors;
 
 import org.sample.crud.demo.dto.TarefaDTO;
 import org.sample.crud.demo.entity.Tarefa;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TarefaDTOFactory {
 
-	@Autowired
-	private DepartamentoDTOFactory departamentoDTOFactory;
+	public static TarefaDTOFactory tarefaDTOFactory;
+
+	public TarefaDTOFactory() {
+	}
+
+	public static TarefaDTOFactory getInstance() {
+		if (tarefaDTOFactory == null) {
+			tarefaDTOFactory = new TarefaDTOFactory();
+		}
+		return tarefaDTOFactory;
+	}
+
+	private DepartamentoDTOFactory departamentoDTOFactory = DepartamentoDTOFactory.getInstance();
 
 	public TarefaDTO createFromEntity(Tarefa tarefa) {
 		TarefaDTO dto = new TarefaDTO();
-		dto.setId(tarefa.getId());
 		dto.setTitulo(tarefa.getTitulo());
 		dto.setDescricao(tarefa.getDescricao());
 		dto.setPrazo(tarefa.getPrazo());

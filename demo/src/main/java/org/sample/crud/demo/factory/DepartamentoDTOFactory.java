@@ -10,10 +10,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DepartamentoDTOFactory {
+	
+	public static DepartamentoDTOFactory departamentoDTOFactory;
+	
+	public DepartamentoDTOFactory() {}
+	
+	public static DepartamentoDTOFactory getInstance() {
+		if(departamentoDTOFactory == null) {
+			departamentoDTOFactory = new DepartamentoDTOFactory();
+		}
+		return departamentoDTOFactory;
+	}
 
 	public DepartamentoDTO createFromEntity(Departamento departamento) {
 		DepartamentoDTO dto = new DepartamentoDTO();
-		dto.setId(departamento.getId());
 		dto.setNome(departamento.getNome());
 		dto.setPessoas(departamento.getPessoas() != null
 				? departamento.getPessoas().stream().map(pessoa -> pessoa.getNome()).collect(Collectors.toList())

@@ -26,8 +26,9 @@ public class PessoaService {
 	PessoaDTOFactory pessoaDTOFactory;
 
 	public PessoaDTO criarPessoa(Pessoa pessoa) {
+		System.out.println("Entrou PessoaService.criarPessoa");
 		List<Departamento> departamentoExistente = departamentoRepository
-				.findByNome(pessoa.getDepartamento().getNome());
+				.findByNome(pessoa.getDepartamento().getNome()); 
 
 		Departamento departamento;
 		if (departamentoExistente.isEmpty()) {

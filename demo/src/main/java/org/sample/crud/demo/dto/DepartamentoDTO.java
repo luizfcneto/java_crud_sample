@@ -3,19 +3,10 @@ package org.sample.crud.demo.dto;
 import java.util.List;
 
 public class DepartamentoDTO {
-	private long id;
 	private String nome;
 	private List<String> pessoas;
 	private int quantidadePessoas;
-	
-	public long getId() {
-		return id;
-	}
-	
-	public void setId(long id) {
-		this.id = id;
-	}
-	
+		
 	public String getNome() {
 		return nome;
 	}

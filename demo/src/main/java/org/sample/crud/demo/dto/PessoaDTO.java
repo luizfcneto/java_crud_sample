@@ -3,20 +3,11 @@ package org.sample.crud.demo.dto;
 import java.util.List;
 
 public class PessoaDTO {
-	private long id;
 	private String nome;
 	private DepartamentoDTO departamento;
 	private List<TarefaDTO> tarefas;
 	private int totalHorasGastas;
 	private double mediaHorasGastasPorTarefa;
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
 
 	public String getNome() {
 		return nome;
@@ -57,7 +48,5 @@ public class PessoaDTO {
 	public void setMediaHorasGastasPorTarefa(double mediaHorasGastasPorTarefa) {
 		this.mediaHorasGastasPorTarefa = mediaHorasGastasPorTarefa;
 	}
-	
-	
 
 }
