@@ -8,6 +8,7 @@ import org.sample.crud.demo.entity.Departamento;
 import org.sample.crud.demo.entity.Pessoa;
 import org.sample.crud.demo.entity.Tarefa;
 import org.sample.crud.demo.factory.TarefaDTOFactory;
+import org.sample.crud.demo.mapper.TarefaMapper;
 import org.sample.crud.demo.repository.DepartamentoRepository;
 import org.sample.crud.demo.repository.PessoaRepository;
 import org.sample.crud.demo.repository.TarefaRepository;
@@ -31,7 +32,8 @@ public class TarefaService {
 
 	public List<TarefaDTO> buscarTarefasPendentes() {
 		List<Tarefa> tarefas = tarefaRepository.buscaTop3TarefasPendentesSemPessoaAlocada();
-		return tarefaDTOFactory.createFromEntities(tarefas);
+//		return tarefaDTOFactory.createFromEntities(tarefas);
+		return TarefaMapper.entitiesToDTO(tarefas);
 	}
 
 	public TarefaDTO criarTarefa(Tarefa tarefa) {
@@ -48,8 +50,9 @@ public class TarefaService {
 		}
 
 		tarefa.setDepartamento(departamento);
-
-		return tarefaDTOFactory.createFromEntity(tarefaRepository.save(tarefa));
+		
+//		return tarefaDTOFactory.createFromEntity(tarefaRepository.save(tarefa));
+		return TarefaMapper.entityToDTO(tarefaRepository.save(tarefa));
 	}
 
 	public TarefaDTO associarTarefaAPessoa(long tarefaId, long pessoaId) throws Exception {
@@ -64,7 +67,8 @@ public class TarefaService {
 		if (tarefa.get().getDepartamento().equals(pessoa.get().getDepartamento())) {
 			tarefa.get().setPessoaAlocada(pessoa.get());
 
-			return tarefaDTOFactory.createFromEntity(tarefaRepository.save(tarefa.get()));
+//			return tarefaDTOFactory.createFromEntity(tarefaRepository.save(tarefa.get()));
+			return TarefaMapper.entityToDTO(tarefaRepository.save(tarefa.get()));
 
 		} else {
 			throw new Error();
@@ -80,7 +84,8 @@ public class TarefaService {
 
 		tarefa.get().setFinalizado(true);
 
-		return tarefaDTOFactory.createFromEntity(tarefaRepository.save(tarefa.get()));
+//		return tarefaDTOFactory.createFromEntity(tarefaRepository.save(tarefa.get()));
+		return TarefaMapper.entityToDTO(tarefaRepository.save(tarefa.get()));
 	}
 
 }

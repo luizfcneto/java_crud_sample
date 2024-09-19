@@ -8,6 +8,7 @@ import org.sample.crud.demo.dto.PessoaDTO;
 import org.sample.crud.demo.entity.Departamento;
 import org.sample.crud.demo.entity.Pessoa;
 import org.sample.crud.demo.factory.PessoaDTOFactory;
+import org.sample.crud.demo.mapper.PessoaMapper;
 import org.sample.crud.demo.repository.DepartamentoRepository;
 import org.sample.crud.demo.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +41,15 @@ public class PessoaService {
 		}
 
 		pessoa.setDepartamento(departamento);
-		return pessoaDTOFactory.createFromEntity(pessoaRepository.save(pessoa));
+//		return pessoaDTOFactory.createFromEntity(pessoaRepository.save(pessoa));
+		return PessoaMapper.entityToDTO(pessoaRepository.save(pessoa));
 	}
 
 	public List<PessoaDTO> buscarPessoas() {
 		List<Pessoa> pessoasEncontradas = pessoaRepository.findAll();
-		return pessoasEncontradas.stream().map(pessoa -> pessoaDTOFactory.createFromEntity(pessoa))
-				.collect(Collectors.toList());
+//		return pessoasEncontradas.stream().map(pessoa -> pessoaDTOFactory.createFromEntity(pessoa))
+//				.collect(Collectors.toList());
+		return PessoaMapper.entitiesToDTO(pessoasEncontradas);
 	}
 
 	public PessoaDTO editarPessoa(long id, Pessoa pessoa) throws Exception {
@@ -74,7 +77,8 @@ public class PessoaService {
 
 			pessoaRepository.save(pessoaAtualizada);
 
-			return pessoaDTOFactory.createFromEntity(pessoaAtualizada);
+//			return pessoaDTOFactory.createFromEntity(pessoaAtualizada);
+			return PessoaMapper.entityToDTO(pessoaAtualizada);
 		} else {
 			throw new Exception();
 		}
