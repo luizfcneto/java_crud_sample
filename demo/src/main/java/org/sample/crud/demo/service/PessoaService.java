@@ -2,14 +2,11 @@ package org.sample.crud.demo.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.sample.crud.demo.dto.PessoaDTO;
 import org.sample.crud.demo.entity.Departamento;
 import org.sample.crud.demo.entity.Pessoa;
+import org.sample.crud.demo.entity.Tarefa;
 import org.sample.crud.demo.factory.PessoaDTOFactory;
-import org.sample.crud.demo.mapper.PessoaMapper;
-import org.sample.crud.demo.repository.DepartamentoRepository;
 import org.sample.crud.demo.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,67 +15,54 @@ import org.springframework.stereotype.Service;
 public class PessoaService {
 
 	@Autowired
-	DepartamentoRepository departamentoRepository;
+	DepartamentoService departamentoService;
 
 	@Autowired
 	PessoaRepository pessoaRepository;
 
 	@Autowired
 	PessoaDTOFactory pessoaDTOFactory;
+	
+	@Autowired
+	TarefaService tarefaService;
+	
+	public List<Pessoa> buscarPessoas(){
+		return pessoaRepository.findAll();
+	}
+	
 
-	public PessoaDTO criarPessoa(Pessoa pessoa) {
-		System.out.println("Entrou PessoaService.criarPessoa");
-		List<Departamento> departamentoExistente = departamentoRepository
-				.findByNome(pessoa.getDepartamento().getNome()); 
-
-		Departamento departamento;
-		if (departamentoExistente.isEmpty()) {
-			departamento = new Departamento();
-			departamento.setNome(pessoa.getDepartamento().getNome());
-			departamentoRepository.save(departamento);
-		} else {
-			departamento = departamentoExistente.get(0);
-		}
-
+//	TODO: Melhorar tratamento de erros
+	public Pessoa criarPessoa(Pessoa pessoa) throws Exception {
+		Departamento departamento = departamentoService.confirmarDepartamento(pessoa.getDepartamento());
 		pessoa.setDepartamento(departamento);
-//		return pessoaDTOFactory.createFromEntity(pessoaRepository.save(pessoa));
-		return PessoaMapper.entityToDTO(pessoaRepository.save(pessoa));
+		
+		
+		if(pessoa.getTarefas() != null) {
+			List<Tarefa> tarefasConfirmadas = tarefaService.confirmarTarefas(pessoa.getTarefas(), pessoa.getDepartamento());			
+			pessoa.setTarefas(tarefasConfirmadas);
+		}
+		
+		pessoa = pessoaRepository.save(pessoa);
+		tarefaService.associarTarefasAPessoa(pessoa);
+		
+		return pessoa;
+		
 	}
 
-	public List<PessoaDTO> buscarPessoas() {
-		List<Pessoa> pessoasEncontradas = pessoaRepository.findAll();
-//		return pessoasEncontradas.stream().map(pessoa -> pessoaDTOFactory.createFromEntity(pessoa))
-//				.collect(Collectors.toList());
-		return PessoaMapper.entitiesToDTO(pessoasEncontradas);
-	}
-
-	public PessoaDTO editarPessoa(long id, Pessoa pessoa) throws Exception {
-
+//	Melhorar Tratamento de erro
+	public Pessoa editarPessoa(long id, Pessoa pessoa) throws Exception {
 		Optional<Pessoa> pessoaEncontrada = pessoaRepository.findById(id);
 
 		if (pessoaEncontrada.isPresent()) {
 			Pessoa pessoaAtualizada = pessoaEncontrada.get();
-			
-			List<Departamento> departamentoExistente = departamentoRepository
-					.findByNome(pessoa.getDepartamento().getNome());
-			
-			Departamento departamento;
-			if (departamentoExistente.isEmpty()) {
-				departamento = new Departamento();
-				departamento.setNome(pessoa.getDepartamento().getNome());
-				departamentoRepository.save(departamento);
-			} else {
-				departamento = departamentoExistente.get(0);
-			}
+			Departamento departamento = departamentoService.confirmarDepartamento(pessoa.getDepartamento());
 
 			pessoaAtualizada.setNome(pessoa.getNome());
 			pessoaAtualizada.setDepartamento(departamento);
-			pessoaAtualizada.setTarefas(pessoa.getTarefas());
 
 			pessoaRepository.save(pessoaAtualizada);
-
-//			return pessoaDTOFactory.createFromEntity(pessoaAtualizada);
-			return PessoaMapper.entityToDTO(pessoaAtualizada);
+			
+			return pessoaAtualizada;
 		} else {
 			throw new Exception();
 		}
@@ -87,6 +71,20 @@ public class PessoaService {
 	
 	public void deletarPessoa(long id) throws Exception {
 		pessoaRepository.deleteById(id);		
+	}
+	
+	public Pessoa confirmarPessoa(Pessoa pessoa) {
+		Optional<Pessoa> pessoaExiste = pessoaRepository.findById(pessoa.getId());
+		
+		if(pessoaExiste.isPresent()) {
+			return pessoaExiste.get();
+		}
+		
+		return pessoaRepository.save(pessoa);
+	}
+	
+	public Optional<Pessoa> buscarPessoaPorId(long pessoaId) {
+		return pessoaRepository.findById(pessoaId);
 	}
 
 }

@@ -38,16 +38,6 @@ public class PessoaDTOBuilder {
 		return this;
 	}
 	
-	public PessoaDTOBuilder addtotalHorasGastas(int totalHorasGastas) {
-		this.pessoa.setTotalHorasGastas(totalHorasGastas);
-		return this;
-	}
-	
-	public PessoaDTOBuilder addMediaHorasGastasPorTarefa(double mediaTotalHorasGastas) {
-		this.pessoa.setMediaHorasGastasPorTarefa(mediaTotalHorasGastas);
-		return this;
-	}
-	
 	public PessoaDTO build() {
 		return this.pessoa;
 	}

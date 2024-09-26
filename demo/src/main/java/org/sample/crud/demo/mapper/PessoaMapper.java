@@ -24,4 +24,5 @@ public class PessoaMapper {
 		return pessoas.stream().map(pessoa -> entityToDTO(pessoa)).collect(Collectors.toList());
 	}
 	
+	
 }

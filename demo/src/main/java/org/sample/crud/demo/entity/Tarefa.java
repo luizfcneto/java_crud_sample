@@ -94,4 +94,5 @@ public class Tarefa {
 	public void setFinalizado(boolean finalizado) {
 		this.finalizado = finalizado;
 	}
+	
 }

@@ -2,7 +2,7 @@ package org.sample.crud.demo.controller;
 
 import java.util.List;
 
-import org.sample.crud.demo.dto.DepartamentoDTO;
+import org.sample.crud.demo.entity.Departamento;
 import org.sample.crud.demo.service.DepartamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
@@ -19,10 +19,10 @@ public class DepartamentoController {
 	DepartamentoService departamentoService;
 	
 	@GetMapping
-	public ResponseEntity<List<DepartamentoDTO>> listarDepartamentos(){
+	public ResponseEntity<List<Departamento>> listarDepartamentos(){
 		try {
-			List<DepartamentoDTO> departamentos = departamentoService.listarTodosDepartamentos();
-			return new ResponseEntity<List<DepartamentoDTO>>(departamentos, HttpStatusCode.valueOf(200));
+			List<Departamento> departamentos = departamentoService.listarTodosDepartamentos();
+			return new ResponseEntity<List<Departamento>>(departamentos, HttpStatusCode.valueOf(200));
 		} catch (Exception ex) {
 			return new ResponseEntity<>(HttpStatusCode.valueOf(500));
 		}

@@ -1,16 +1,12 @@
 package org.sample.crud.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.sample.crud.demo.dto.TarefaDTO;
 import org.sample.crud.demo.entity.Departamento;
 import org.sample.crud.demo.entity.Pessoa;
 import org.sample.crud.demo.entity.Tarefa;
-import org.sample.crud.demo.factory.TarefaDTOFactory;
-import org.sample.crud.demo.mapper.TarefaMapper;
-import org.sample.crud.demo.repository.DepartamentoRepository;
-import org.sample.crud.demo.repository.PessoaRepository;
 import org.sample.crud.demo.repository.TarefaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,60 +18,98 @@ public class TarefaService {
 	TarefaRepository tarefaRepository;
 
 	@Autowired
-	PessoaRepository pessoaRepository;
+	PessoaService pessoaService;
 
 	@Autowired
-	DepartamentoRepository departamentoRepository;
+	DepartamentoService departamentoService;
 
-	@Autowired
-	TarefaDTOFactory tarefaDTOFactory;
-
-	public List<TarefaDTO> buscarTarefasPendentes() {
-		List<Tarefa> tarefas = tarefaRepository.buscaTop3TarefasPendentesSemPessoaAlocada();
-//		return tarefaDTOFactory.createFromEntities(tarefas);
-		return TarefaMapper.entitiesToDTO(tarefas);
+	public List<Tarefa> buscarTarefasPendentes() {
+		return tarefaRepository.buscaTop3TarefasPendentesSemPessoaAlocada();
 	}
 
-	public TarefaDTO criarTarefa(Tarefa tarefa) {
-		List<Departamento> departamentoExistente = departamentoRepository
-				.findByNome(tarefa.getDepartamento().getNome());
-		Departamento departamento;
-
-		if (departamentoExistente.isEmpty()) {
-			departamento = new Departamento();
-			departamento.setNome(tarefa.getDepartamento().getNome());
-			departamentoRepository.save(departamento);
-		} else {
-			departamento = departamentoExistente.get(0);
+	public Tarefa criarTarefa(Tarefa tarefa) {
+		Optional<Tarefa> tarefaExistente = tarefaRepository.findById(tarefa.getId());
+		if (tarefaExistente.isPresent()) {
+			return tarefaExistente.get();
 		}
 
+		Departamento departamento = departamentoService.confirmarDepartamento(tarefa.getDepartamento());
 		tarefa.setDepartamento(departamento);
-		
-//		return tarefaDTOFactory.createFromEntity(tarefaRepository.save(tarefa));
-		return TarefaMapper.entityToDTO(tarefaRepository.save(tarefa));
+
+//		if (tarefa.getPessoaAlocada() != null) {
+//			Pessoa pessoaAlocada = pessoaService.confirmarPessoa(tarefa.getPessoaAlocada());
+//			tarefa.setPessoaAlocada(pessoaAlocada);
+//		}
+
+		return tarefaRepository.save(tarefa);
 	}
 
-	public TarefaDTO associarTarefaAPessoa(long tarefaId, long pessoaId) throws Exception {
+//	public List<Tarefa> buscarTarefas(List<TarefaDTO> tarefasDTO) {
+//		List<Tarefa> tarefasEntity = new ArrayList<Tarefa>();
+//
+//		tarefasDTO.forEach(tarefa -> {
+//			List<Tarefa> tarefaExiste = tarefaRepository.findByTitulo(tarefa.getTitulo());
+//
+//			if (!tarefaExiste.isEmpty()) {
+//				tarefasEntity.add(tarefaExiste.getFirst());
+//			} else {
+//				tarefasEntity.add(criarTarefa(tarefa));
+//			}
+//
+//		});
+//
+//		return null;
+//	}
+	
+	public List<Tarefa> confirmarTarefas(List<Tarefa> tarefas, Departamento departamento) {
+		List<Tarefa> tarefasConfirmadas = new ArrayList<Tarefa>();
+		
+		tarefas.forEach(tarefa -> {
+			if(tarefa.getDepartamento().getNome().equals(departamento.getNome())) {
+				tarefa.setDepartamento(departamento);
+				Tarefa novaTarefa = criarTarefa(tarefa);
+				tarefasConfirmadas.add(novaTarefa);
+			}
+		});
+		
+		return tarefasConfirmadas;
+	}
+	
+	public void associarTarefasAPessoa(Pessoa pessoa) throws Exception {
+		pessoa.getTarefas().forEach(tarefa -> {
+			try {
+				associarTarefaAPessoa(tarefa.getId(), pessoa.getId());
+			}catch(Exception ex) {
+				System.out.println("Erro ao tentar associar tarefa " + tarefa.getId()  + " à pessoa" + pessoa.getId());
+			}
+		});
+	}
+
+
+//	TODO: Melhorar tratamento de erro
+	public Tarefa associarTarefaAPessoa(long tarefaId, long pessoaId) throws Exception {
 
 		Optional<Tarefa> tarefa = tarefaRepository.findById(tarefaId);
-		Optional<Pessoa> pessoa = pessoaRepository.findById(pessoaId);
+		Optional<Pessoa> pessoa = pessoaService.buscarPessoaPorId(pessoaId);
 
 		if (tarefa.isEmpty() || pessoa.isEmpty()) {
 			throw new Error();
 		}
 
-		if (tarefa.get().getDepartamento().equals(pessoa.get().getDepartamento())) {
+		boolean departamentoDeTarefaEPessoaIguais = tarefa.get().getDepartamento()
+				.equals(pessoa.get().getDepartamento());
+		if (departamentoDeTarefaEPessoaIguais) {
 			tarefa.get().setPessoaAlocada(pessoa.get());
 
-//			return tarefaDTOFactory.createFromEntity(tarefaRepository.save(tarefa.get()));
-			return TarefaMapper.entityToDTO(tarefaRepository.save(tarefa.get()));
+			return tarefaRepository.save(tarefa.get());
 
 		} else {
 			throw new Error();
 		}
 	}
 
-	public TarefaDTO finalizarTarefa(long id) throws Exception {
+//	Melhorar tratamento de Erro
+	public Tarefa finalizarTarefa(long id) throws Exception {
 		Optional<Tarefa> tarefa = tarefaRepository.findById(id);
 
 		if (tarefa.isEmpty() || tarefa.get().getPessoaAlocada() == null) {
@@ -83,9 +117,8 @@ public class TarefaService {
 		}
 
 		tarefa.get().setFinalizado(true);
-
-//		return tarefaDTOFactory.createFromEntity(tarefaRepository.save(tarefa.get()));
-		return TarefaMapper.entityToDTO(tarefaRepository.save(tarefa.get()));
+		return tarefaRepository.save(tarefa.get());
 	}
+	
 
 }

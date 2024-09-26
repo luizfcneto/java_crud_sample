@@ -26,5 +26,5 @@ public class TarefaMapper {
 	public static List<TarefaDTO> entitiesToDTO(List<Tarefa> tarefas){
 		return tarefas.stream().map(tarefa -> entityToDTO(tarefa)).collect(Collectors.toList());
 	}
-	
+		
 }

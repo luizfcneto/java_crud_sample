@@ -2,7 +2,6 @@ package org.sample.crud.demo.controller;
 
 import java.util.List;
 
-import org.sample.crud.demo.dto.TarefaDTO;
 import org.sample.crud.demo.entity.Tarefa;
 import org.sample.crud.demo.service.TarefaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,49 +23,53 @@ public class TarefaController {
 	@Autowired
 	TarefaService tarefaService;
 	
+//	REFATORADO
 	@GetMapping("/pendentes")
-	public ResponseEntity<List<TarefaDTO>> listaTarefasPendentes(){
+	public ResponseEntity<List<Tarefa>> listaTarefasPendentes(){
 		try {
-			List<TarefaDTO> tarefaDTO = tarefaService.buscarTarefasPendentes();
-			return new ResponseEntity<List<TarefaDTO>>(tarefaDTO, HttpStatusCode.valueOf(201));
+			List<Tarefa> tarefasPendentes = tarefaService.buscarTarefasPendentes();
+			return new ResponseEntity<List<Tarefa>>(tarefasPendentes, HttpStatusCode.valueOf(201));
 		} catch (Exception ex) {
 			return new ResponseEntity<>(HttpStatusCode.valueOf(500));
 		}
 	}
 
+//	REFATORADO
 	@PostMapping
-	public ResponseEntity<TarefaDTO> adicionarTarefa(@RequestBody Tarefa tarefa) {
+	public ResponseEntity<Tarefa> adicionarTarefa(@RequestBody Tarefa tarefa) {
 
 		try {
-			TarefaDTO tarefaDTO = tarefaService.criarTarefa(tarefa);
-			return new ResponseEntity<TarefaDTO>(tarefaDTO, HttpStatusCode.valueOf(201));
+			Tarefa novaTarefa = tarefaService.criarTarefa(tarefa);
+			return new ResponseEntity<Tarefa>(novaTarefa, HttpStatusCode.valueOf(201));
 		} catch (Exception ex) {
-			return new ResponseEntity<TarefaDTO>(HttpStatusCode.valueOf(500));
+			return new ResponseEntity<>(HttpStatusCode.valueOf(500));
 		}
-
 	}
 
+//	REFATORADO
 	@PutMapping("/alocar/{tarefaId}")
-	public ResponseEntity<TarefaDTO> alocarPessoaNaTarefa(
+	public ResponseEntity<Tarefa> alocarPessoaNaTarefa(
 			@PathVariable(name = "tarefaId", required = true) long tarefaId,
 			@RequestParam(name = "pessoaId", required = true) long pessoaId) {
 
 		try {
-			TarefaDTO tarefaDTO = tarefaService.associarTarefaAPessoa(tarefaId, pessoaId);
-			return new ResponseEntity<TarefaDTO>(tarefaDTO, HttpStatusCode.valueOf(200));
+			Tarefa tarefa = tarefaService.associarTarefaAPessoa(tarefaId, pessoaId);
+			return new ResponseEntity<Tarefa>(tarefa, HttpStatusCode.valueOf(200));
 		} catch (Exception ex) {
-			return new ResponseEntity<TarefaDTO>(HttpStatusCode.valueOf(500));
+			return new ResponseEntity<>(HttpStatusCode.valueOf(500));
 		}
 	}
 
+	
+//	REFATORADO
 	@PutMapping("/finalizar/{id}")
-	public ResponseEntity<TarefaDTO> finalizarTarefa(@PathVariable(name = "id", required = true) long id){
+	public ResponseEntity<Tarefa> finalizarTarefa(@PathVariable(name = "id", required = true) long id){
 		
 		try {
-			TarefaDTO tarefaDTO = tarefaService.finalizarTarefa(id);
-			return new ResponseEntity<TarefaDTO>(tarefaDTO, HttpStatusCode.valueOf(200));
+			Tarefa tarefa = tarefaService.finalizarTarefa(id);
+			return new ResponseEntity<Tarefa>(tarefa, HttpStatusCode.valueOf(200));
 		} catch (Exception ex) {
-			return new ResponseEntity<TarefaDTO>(HttpStatusCode.valueOf(500));
+			return new ResponseEntity<>(HttpStatusCode.valueOf(500));
 		}
 	}
 	

@@ -2,7 +2,6 @@ package org.sample.crud.demo.controller;
 
 import java.util.List;
 
-import org.sample.crud.demo.dto.PessoaDTO;
 import org.sample.crud.demo.entity.Pessoa;
 import org.sample.crud.demo.service.PessoaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +24,13 @@ public class PessoaController {
 	PessoaService pessoaService;
 
 
-	// listar pessoas
+	// listar pessoas REFATORADO
 	@GetMapping
-	public ResponseEntity<List<PessoaDTO>> listarPessoas() {
+	public ResponseEntity<List<Pessoa>> listarPessoas() {
 		
 		try {
-			List<PessoaDTO> listaPessoas = pessoaService.buscarPessoas();
-			return new ResponseEntity<List<PessoaDTO>>(listaPessoas, HttpStatusCode.valueOf(200));
+			List<Pessoa> listaPessoas = pessoaService.buscarPessoas();
+			return new ResponseEntity<List<Pessoa>>(listaPessoas, HttpStatusCode.valueOf(200));
 			
 		}catch(Exception ex) {
 			return new ResponseEntity<>(HttpStatusCode.valueOf(500));
@@ -40,26 +39,28 @@ public class PessoaController {
 
 	// buscar pessoas por nome e período
 
-	
+
+//	REFATORADO
 	@PostMapping
-	public ResponseEntity<PessoaDTO> adicionarPessoa(@RequestBody Pessoa pessoa) {
+	public ResponseEntity<Pessoa> adicionarPessoa(@RequestBody Pessoa pessoa) {
 		try {
-			PessoaDTO pessoaDTO = pessoaService.criarPessoa(pessoa);
-			return new ResponseEntity<PessoaDTO>(pessoaDTO, HttpStatusCode.valueOf(201));
+			Pessoa novaPessoa = pessoaService.criarPessoa(pessoa);
+			return new ResponseEntity<Pessoa>(novaPessoa, HttpStatusCode.valueOf(201));
 			
 		}catch(Exception ex) {
-			return new ResponseEntity<PessoaDTO>(HttpStatusCode.valueOf(500));
+			return new ResponseEntity<>(HttpStatusCode.valueOf(500));
 		}
 	}
 
+//	REFATORADO
 	@PutMapping("/{id}")
-	public ResponseEntity<PessoaDTO> atualizarPessoa(@RequestBody Pessoa pessoa, @PathVariable(name = "id", required = true) long id){
+	public ResponseEntity<Pessoa> atualizarPessoa(@RequestBody Pessoa pessoa, @PathVariable(name = "id", required = true) long id){
 
 		try {
-			PessoaDTO pessoaAtualizada = pessoaService.editarPessoa(id, pessoa);
-			return new ResponseEntity<PessoaDTO>(pessoaAtualizada, HttpStatusCode.valueOf(200));
+			Pessoa pessoaAtualizada = pessoaService.editarPessoa(id, pessoa);
+			return new ResponseEntity<Pessoa>(pessoaAtualizada, HttpStatusCode.valueOf(200));
 		}catch(Exception ex) {
-			return new ResponseEntity<PessoaDTO>(HttpStatusCode.valueOf(500));
+			return new ResponseEntity<>(HttpStatusCode.valueOf(500));
 		}
 	}
 
