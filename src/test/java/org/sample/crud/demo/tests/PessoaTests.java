@@ -56,7 +56,7 @@ public class PessoaTests {
 		
 		assertEquals(this.pessoaDTO.getNome(), this.NOME_PESSOA, "Nome de pessoa deve ser igual");
 		assertEquals(this.pessoaDTO.getDepartamento().getNome(), this.departamentoDTO.getNome(), "Nome de departamento deve ser igual");
-		assertEquals(this.pessoaDTO.getTarefas().getFirst().getTitulo(), this.tarefasDTO.getFirst().getTitulo());		
+		assertEquals(this.pessoaDTO.getTarefas().get(0).getTitulo(), this.tarefasDTO.get(0).getTitulo());		
 		
 	}
 	
@@ -93,7 +93,7 @@ public class PessoaTests {
 		
 		assertEquals(this.pessoaDTO.getNome(), this.NOME_PESSOA, "Nome de pessoa deve ser igual");
 		assertEquals(this.pessoaDTO.getDepartamento().getNome(), this.departamentoDTO.getNome(), "Nome de departamento deve ser igual");
-		assertEquals(this.pessoaDTO.getTarefas().getFirst().getTitulo(), this.tarefasDTO.getFirst().getTitulo());
+		assertEquals(this.pessoaDTO.getTarefas().get(0).getTitulo(), this.tarefasDTO.get(0).getTitulo());
 		
 	}	
 	

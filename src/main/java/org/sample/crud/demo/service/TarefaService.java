@@ -12,17 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TarefaService {
+public class TarefaService implements TarefaServiceInterface {
 
 	@Autowired
 	TarefaRepository tarefaRepository;
 
 	@Autowired
-	PessoaService pessoaService;
-
-	@Autowired
 	DepartamentoService departamentoService;
-
+	
 	public List<Tarefa> buscarTarefasPendentes() {
 		return tarefaRepository.buscaTop3TarefasPendentesSemPessoaAlocada();
 	}
@@ -88,9 +85,9 @@ public class TarefaService {
 
 //	TODO: Melhorar tratamento de erro
 	public Tarefa associarTarefaAPessoa(long tarefaId, long pessoaId) throws Exception {
-
+		AssociaPessoaATarefaService associaPessoaATarefaService = new AssociaPessoaATarefaService();
 		Optional<Tarefa> tarefa = tarefaRepository.findById(tarefaId);
-		Optional<Pessoa> pessoa = pessoaService.buscarPessoaPorId(pessoaId);
+		Optional<Pessoa> pessoa = associaPessoaATarefaService.buscaPessoaPorId(pessoaId);
 
 		if (tarefa.isEmpty() || pessoa.isEmpty()) {
 			throw new Error();
@@ -119,6 +116,11 @@ public class TarefaService {
 		tarefa.get().setFinalizado(true);
 		return tarefaRepository.save(tarefa.get());
 	}
-	
+
+	@Override
+	public Tarefa salvar(Tarefa tarefa) {
+		return this.tarefaRepository.save(tarefa);
+	}
+		
 
 }

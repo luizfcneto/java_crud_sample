@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PessoaService {
+public class PessoaService implements PessoaServiceInterface {
 
 	@Autowired
 	DepartamentoService departamentoService;
@@ -23,8 +23,7 @@ public class PessoaService {
 	@Autowired
 	PessoaDTOFactory pessoaDTOFactory;
 	
-	@Autowired
-	TarefaService tarefaService;
+	;
 	
 	public List<Pessoa> buscarPessoas(){
 		return pessoaRepository.findAll();
@@ -33,17 +32,18 @@ public class PessoaService {
 
 //	TODO: Melhorar tratamento de erros
 	public Pessoa criarPessoa(Pessoa pessoa) throws Exception {
+		AssociaPessoaATarefaService associaPessoaATarefaService = new AssociaPessoaATarefaService();
 		Departamento departamento = departamentoService.confirmarDepartamento(pessoa.getDepartamento());
 		pessoa.setDepartamento(departamento);
 		
 		
 		if(pessoa.getTarefas() != null) {
-			List<Tarefa> tarefasConfirmadas = tarefaService.confirmarTarefas(pessoa.getTarefas(), pessoa.getDepartamento());			
+			List<Tarefa> tarefasConfirmadas = associaPessoaATarefaService.confirmarTarefas(pessoa.getTarefas(), pessoa.getDepartamento());			
 			pessoa.setTarefas(tarefasConfirmadas);
 		}
 		
-		pessoa = pessoaRepository.save(pessoa);
-		tarefaService.associarTarefasAPessoa(pessoa);
+		pessoa = this.salvar(pessoa);
+		associaPessoaATarefaService.associarTarefasAPessoa(pessoa);
 		
 		return pessoa;
 		
@@ -83,8 +83,15 @@ public class PessoaService {
 		return pessoaRepository.save(pessoa);
 	}
 	
+	@Override
 	public Optional<Pessoa> buscarPessoaPorId(long pessoaId) {
 		return pessoaRepository.findById(pessoaId);
+	}
+
+
+	@Override
+	public Pessoa salvar(Pessoa pessoa) {
+		return this.pessoaRepository.save(pessoa);
 	}
 
 }

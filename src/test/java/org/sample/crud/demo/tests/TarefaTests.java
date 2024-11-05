@@ -104,13 +104,13 @@ public class TarefaTests {
 		this.tarefa.setPessoaAlocada(this.pessoa);
 		
 		this.tarefasDTO = tarefaDTOFactory.createFromEntities(this.tarefas);
-		assertEquals(this.tarefasDTO.getFirst().getTitulo(), TITULO_TAREFA_1);
-		assertEquals(this.tarefasDTO.getFirst().getDescricao(), DESCRICAO_TAREFA_1);
-		assertEquals(this.tarefasDTO.getFirst().getDuracao(), DURACAO_TAREFA_1);
-		assertEquals(this.tarefasDTO.getFirst().getDepartamento().getNome(), NOME_DEPARTAMENTO, "Nome de Departamento deve ser o mesmo");
-		assertEquals(this.tarefasDTO.getFirst().getPrazo(), PRAZO_TAREFA1);
-		assertEquals(this.tarefasDTO.getFirst().isFinalizado(), FINALIZADO);
-		assertEquals(this.tarefasDTO.getFirst().getPessoaAlocada(), NOME_PESSOA, "Nome da pessoa alocada deve ser igual nome da pessoa");
+		assertEquals(this.tarefasDTO.get(0).getTitulo(), TITULO_TAREFA_1);
+		assertEquals(this.tarefasDTO.get(0).getDescricao(), DESCRICAO_TAREFA_1);
+		assertEquals(this.tarefasDTO.get(0).getDuracao(), DURACAO_TAREFA_1);
+		assertEquals(this.tarefasDTO.get(0).getDepartamento().getNome(), NOME_DEPARTAMENTO, "Nome de Departamento deve ser o mesmo");
+		assertEquals(this.tarefasDTO.get(0).getPrazo(), PRAZO_TAREFA1);
+		assertEquals(this.tarefasDTO.get(0).isFinalizado(), FINALIZADO);
+		assertEquals(this.tarefasDTO.get(0).getPessoaAlocada(), NOME_PESSOA, "Nome da pessoa alocada deve ser igual nome da pessoa");
 	}
 	
 	
